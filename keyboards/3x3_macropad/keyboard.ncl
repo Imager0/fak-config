@@ -1,17 +1,29 @@
-let { DirectPinKey, .. } = import "fak/keyboard.ncl" in
-let { CH552T, .. } = import "fak/mcus.ncl" in
+let { Matrix, DirectPinKey, Encoder, .. } = import "fak/keyboard.ncl" in
+let { CH552G, .. } = import "fak/mcus.ncl" in
 
 {
-  mcu = CH552T,
+  mcu = CH552G,
   usb_dev = {
     vendor_id = 51966,  # 0xCAFE
     product_id = 47806, # 0xBABE
     product_ver = 256,  # 0x0100
   },
   keys =
+    let M = Matrix {
+      rows = [ 14, 15 ],       
+      cols = [ 16, 17, 31 ],   
+    } in
     let D = DirectPinKey in
     [
-        D 11, D 14, D 15, D 16, D 17,
-        D 30, D 31, D 32, D 33, D 34
-    ]
+      M 0 0, M 0 1, M 0 2,
+      M 1 0, M 1 1, M 1 2,
+      D 34
+    ],
+  
+  encoders = [
+    Encoder {
+      pad_a = 32, 
+      pad_b = 33, 
+    }
+  ]
 }

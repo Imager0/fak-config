@@ -1,4 +1,4 @@
-let { Matrix, DirectPinKey, Encoder, .. } = import "fak/keyboard.ncl" in
+let { ColToRowKey, DirectPinKey, PhysicalEncoder, .. } = import "fak/keyboard.ncl" in
 let { CH552G, .. } = import "fak/mcus.ncl" in
 
 {
@@ -8,22 +8,27 @@ let { CH552G, .. } = import "fak/mcus.ncl" in
     product_id = 47806, # 0xBABE
     product_ver = 256,  # 0x0100
   },
+  
+  # Описываем нашу сетку пинов
+  matrix = {
+    rows = [ 14, 15 ],     # Индексы строк: 0 и 1
+    cols = [ 16, 17, 31 ], # Индексы столбцов: 0, 1 и 2
+  },
+  
+  # Назначаем физические кнопки
   keys =
-    let M = Matrix {
-      rows = [ 14, 15 ],       
-      cols = [ 16, 17, 31 ],   
-    } in
+    let K = ColToRowKey in
     let D = DirectPinKey in
     [
-      M 0 0, M 0 1, M 0 2,
-      M 1 0, M 1 1, M 1 2,
-      D 34
+      # Формат: K (номер_столбца) (номер_строки)
+      K 0 0, K 1 0, K 2 0,  # Верхний ряд из 3 кнопок
+      K 0 1, K 1 1, K 2 1,  # Нижний ряд из 3 кнопок
+      
+      D 34                  # Нажатие на энкодер (напрямую на пин)
     ],
-  
+    
+  # Настройки "крутилки"
   encoders = [
-    Encoder {
-      pad_a = 32, 
-      pad_b = 33, 
-    }
+    PhysicalEncoder 32 33 1 # Пин A, Пин B и разрешение (1 шаг)
   ]
 }
